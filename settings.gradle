@@ -1,3 +1,4 @@
 rootProject.name = 'dispatchr'
 include 'dispatchr-server'
+include 'dispatcher-example'
 
