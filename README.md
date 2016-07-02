@@ -3,7 +3,7 @@ dispatchr
 
 ![TravisCI](https://travis-ci.org/ignitr-oss/dispatchr.svg?branch=master)
 
-A microservices event management framework for use within Amazon Web Services.
+A microservices event management framework designed for use within Amazon Web Services.
 
 ##License
 Copyright 2016 Greg Whitaker
