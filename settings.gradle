@@ -1,2 +1,3 @@
 rootProject.name = 'dispatchr'
+include 'dispatchr-server'
 
