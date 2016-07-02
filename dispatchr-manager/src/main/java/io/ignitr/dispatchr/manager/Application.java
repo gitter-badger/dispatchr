@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package io.ignitr.dispatchr.server;
+package io.ignitr.dispatchr.manager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Starts the Dispatchr Server.
+ * Starts the Dispatchr Manager.
  */
 @SpringBootApplication
 public class Application {

@@ -1,4 +1,8 @@
 
+project(":dispatchr-manager") {
+    ext.artifact = 'dispatchr-manager'
+}
+
 project(":dispatchr-server") {
     ext.artifact = 'dispatchr-server'
 }
