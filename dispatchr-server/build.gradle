@@ -17,6 +17,10 @@ apply plugin: 'java'
 apply plugin: 'spring-boot'
 apply plugin: 'io.spring.dependency-management'
 
+apply from: file('../gradle/codequality.gradle')
+apply from: file('../gradle/release.gradle')
+apply from: file('../gradle/convention.gradle')
+
 dependencyManagement {
     imports {
         mavenBom "io.spring.platform:platform-bom:2.0.5.RELEASE"

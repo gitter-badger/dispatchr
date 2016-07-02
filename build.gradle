@@ -6,4 +6,3 @@ project(":dispatchr-manager") {
 project(":dispatchr-server") {
     ext.artifact = 'dispatchr-server'
 }
-
