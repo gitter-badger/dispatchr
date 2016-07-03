@@ -38,6 +38,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -64,7 +65,8 @@ public class TopicController {
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public DeferredResult<ResponseEntity<FindTopicsResponse>> findAll(@RequestParam(value = "offset", defaultValue = "0") Long offset,
                                                                       @RequestParam(value = "limit", defaultValue = "25") Long limit,
-                                                                      @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir) {
+                                                                      @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir,
+                                                                      HttpServletRequest httpRequest) {
         final DeferredResult<ResponseEntity<FindTopicsResponse>> deferredResult = new DeferredResult<>();
 
         service.findAll(offset, limit, sortDir)
@@ -93,7 +95,8 @@ public class TopicController {
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public DeferredResult<ResponseEntity<?>> findRegistered(@RequestParam(value = "offset", defaultValue = "0") Long offset,
                                                             @RequestParam(value = "limit", defaultValue = "25") Long limit,
-                                                            @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir) {
+                                                            @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir,
+                                                            HttpServletRequest httpRequest) {
         final DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
 
         service.findRegistered(offset, limit, sortDir)
@@ -122,7 +125,8 @@ public class TopicController {
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public DeferredResult<ResponseEntity<?>> findUnregistered(@RequestParam(value = "offset", defaultValue = "0") Long offset,
                                                               @RequestParam(value = "limit", defaultValue = "25") Long limit,
-                                                              @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir) {
+                                                              @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir,
+                                                              HttpServletRequest httpRequest) {
         final DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
 
         Observable.fromCallable(() -> SortDirectionValidator.validate(sortDir))
@@ -157,7 +161,8 @@ public class TopicController {
     @RequestMapping(method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public DeferredResult<ResponseEntity<?>> register(@Valid @RequestBody RegisterTopicRequest request) {
+    public DeferredResult<ResponseEntity<?>> register(@Valid @RequestBody RegisterTopicRequest request,
+                                                      HttpServletRequest httpRequest) {
         final DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
 
         service.register(request)
