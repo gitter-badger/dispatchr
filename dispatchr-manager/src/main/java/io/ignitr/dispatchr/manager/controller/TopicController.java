@@ -58,7 +58,7 @@ public class TopicController {
      * @param offset index of item to start returning when using pagination
      * @param limit number of items to return when using pagination
      * @param sortDir sort order in which to return items when using pagination
-     * @return
+     * @return an HTTP 200 response if the request was successful
      */
     @RequestMapping(method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
@@ -86,7 +86,7 @@ public class TopicController {
      * @param offset index of item to start returning when using pagination
      * @param limit number of items to return when using pagination
      * @param sortDir sort order in which to return items when using pagination
-     * @return
+     * @return an HTTP 200 response if the request was successful
      */
     @RequestMapping(method = RequestMethod.GET,
                     value = "/registered",
@@ -115,7 +115,7 @@ public class TopicController {
      * @param offset index of item to start returning when using pagination
      * @param limit number of items to return when using pagination
      * @param sortDir sort order in which to return items when using pagination
-     * @return
+     * @return an HTTP 200 response if the request was successful
      */
     @RequestMapping(method = RequestMethod.GET,
                     value = "/unregistered",
@@ -152,7 +152,7 @@ public class TopicController {
      * Register an SNS topic with Dispatchr.
      *
      * @param request {@link RegisterTopicRequest} that contains the information of the SNS topic to register
-     * @return
+     * @return an HTTP 201 response if the request was successful
      */
     @RequestMapping(method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
