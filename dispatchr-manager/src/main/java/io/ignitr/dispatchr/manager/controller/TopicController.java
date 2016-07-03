@@ -21,6 +21,9 @@ public class TopicController {
     /**
      * Find all available SNS topics within the AWS account and whether or not they are registered with Dispatchr.
      *
+     * @param offset index of item to start returning when using pagination
+     * @param limit number of items to return when using pagination
+     * @param sortDir sort order in which to return items when using pagination
      * @return
      */
     @RequestMapping(method = RequestMethod.GET,
@@ -36,6 +39,9 @@ public class TopicController {
     /**
      * Find all SNS topics that have been registered with Dispatchr.
      *
+     * @param offset index of item to start returning when using pagination
+     * @param limit number of items to return when using pagination
+     * @param sortDir sort order in which to return items when using pagination
      * @return
      */
     @RequestMapping(method = RequestMethod.GET,
@@ -52,6 +58,9 @@ public class TopicController {
     /**
      * Find all SNS topics that are not registered with Dispatchr.
      *
+     * @param offset index of item to start returning when using pagination
+     * @param limit number of items to return when using pagination
+     * @param sortDir sort order in which to return items when using pagination
      * @return
      */
     @RequestMapping(method = RequestMethod.GET,
