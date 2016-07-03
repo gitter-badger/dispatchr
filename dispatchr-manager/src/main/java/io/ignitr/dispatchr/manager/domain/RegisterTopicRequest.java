@@ -14,7 +14,22 @@
  * limitations under the License.
  */
 
-package io.ignitr.dispatchr.manager.core.error;
+package io.ignitr.dispatchr.manager.domain;
 
-public class ErrorCode {
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.validation.annotation.Validated;
+
+@Validated
+public class RegisterTopicRequest {
+
+    @NotEmpty
+    private String arn;
+
+    public String getArn() {
+        return arn;
+    }
+
+    public void setArn(String arn) {
+        this.arn = arn;
+    }
 }
