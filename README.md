@@ -1,6 +1,8 @@
 dispatchr
 ===
 
+[![Join the chat at https://gitter.im/ignitr-oss/dispatchr](https://badges.gitter.im/ignitr-oss/dispatchr.svg)](https://gitter.im/ignitr-oss/dispatchr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/ignitr-oss/dispatchr.svg?branch=master)](https://travis-ci.org/ignitr-oss/dispatchr)
 
 A microservices event management framework designed for use within Amazon Web Services.
