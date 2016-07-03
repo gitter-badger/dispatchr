@@ -1,15 +1,26 @@
 package io.ignitr.dispatchr.manager.domain;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.ignitr.dispatchr.manager.domain.internal.Topic;
 
 import java.net.URI;
 import java.util.List;
 
+@JsonPropertyOrder({
+        "results",
+        "links"
+})
 public class FindTopicsResponse {
     private List<Result> results;
     private List<Link> links;
 
-    public static FindTopicsResponse from(List<Topic> topicMetadatas) {
+    /**
+     * Creates a {@link FindTopicsResponse} instance from a list of {@link Topic}.
+     *
+     * @param topics list of {@link Topic}s to use when creating the response
+     * @return
+     */
+    public static FindTopicsResponse from(List<Topic> topics) {
         FindTopicsResponse response = new FindTopicsResponse();
         return response;
     }
@@ -30,6 +41,11 @@ public class FindTopicsResponse {
         this.links = links;
     }
 
+    @JsonPropertyOrder({
+            "name",
+            "arn",
+            "links"
+    })
     public static class Result {
         private String name;
         private String arn;
@@ -60,6 +76,10 @@ public class FindTopicsResponse {
         }
     }
 
+    @JsonPropertyOrder({
+            "rel",
+            "href"
+    })
     public static class Link {
         private String rel;
         private URI href;
