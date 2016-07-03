@@ -126,19 +126,17 @@ public class TopicController {
         final DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
 
         Observable.fromCallable(() -> SortDirectionValidator.validate(sortDir))
-                .flatMap(valid -> {
-                    return Observable.create(new Observable.OnSubscribe<List<Topic>>() {
-                        @Override
-                        public void call(Subscriber<? super List<Topic>> subscriber) {
-                            service.findUnregistered(offset, limit, sortDir)
-                                    .last()
-                                    .subscribe(topics -> {
-                                        subscriber.onNext(topics);
-                                        subscriber.onCompleted();
-                                    });
-                        }
-                    });
-                })
+                .flatMap(valid -> Observable.create(new Observable.OnSubscribe<List<Topic>>() {
+                    @Override
+                    public void call(Subscriber<? super List<Topic>> subscriber) {
+                        service.findUnregistered(offset, limit, sortDir)
+                                .last()
+                                .subscribe(topics -> {
+                                    subscriber.onNext(topics);
+                                    subscriber.onCompleted();
+                                });
+                    }
+                }))
                 .map(FindTopicsResponse::from)
                 .subscribeOn(Schedulers.io())
                 .subscribe(body -> {
