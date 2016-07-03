@@ -19,6 +19,7 @@ package io.ignitr.dispatchr.manager.controller;
 import io.ignitr.dispatchr.manager.domain.FindTopicsResponse;
 import io.ignitr.dispatchr.manager.domain.RegisterTopicRequest;
 import io.ignitr.dispatchr.manager.domain.RegisterTopicResponse;
+import io.ignitr.dispatchr.manager.domain.internal.Topic;
 import io.ignitr.dispatchr.manager.service.TopicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +33,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
+import rx.Observable;
+import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Controller used to find and associate SNS topics with Dispatchr.
@@ -120,15 +124,34 @@ public class TopicController {
                                                               @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir) {
         final DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
 
-        service.findUnregistered(offset, limit, sortDir)
-                .last()
-                .map(FindTopicsResponse::from)
-                .subscribeOn(Schedulers.io())
-                .subscribe(body -> {
-                   deferredResult.setResult(ResponseEntity.ok(body));
-                }, error -> {
-                    //TODO: Do some error handling
-                });
+        Observable.fromCallable(() -> {
+            if (sortDir != null) {
+                if (!sortDir.equalsIgnoreCase("asc") || !sortDir.equalsIgnoreCase("desc")) {
+                    throw new RuntimeException();
+                }
+            }
+
+            return true;
+        }).flatMap(valid -> {
+            return Observable.create(new Observable.OnSubscribe<List<Topic>>() {
+                @Override
+                public void call(Subscriber<? super List<Topic>> subscriber) {
+                    service.findUnregistered(offset, limit, sortDir)
+                            .last()
+                            .subscribe(topics -> {
+                                subscriber.onNext(topics);
+                                subscriber.onCompleted();
+                            });
+                }
+            });
+        })
+        .map(FindTopicsResponse::from)
+        .subscribeOn(Schedulers.io())
+        .subscribe(body -> {
+            deferredResult.setResult(ResponseEntity.ok(body));
+        }, error -> {
+            // TODO: Do some error handling
+        });
 
         return deferredResult;
     }
