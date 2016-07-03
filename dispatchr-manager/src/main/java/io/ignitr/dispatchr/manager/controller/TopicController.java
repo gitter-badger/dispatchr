@@ -16,9 +16,14 @@
 
 package io.ignitr.dispatchr.manager.controller;
 
+import io.ignitr.dispatchr.manager.domain.FindTopicsResponse;
 import io.ignitr.dispatchr.manager.domain.RegisterTopicRequest;
+import io.ignitr.dispatchr.manager.domain.RegisterTopicResponse;
+import io.ignitr.dispatchr.manager.service.TopicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
+import rx.schedulers.Schedulers;
 
 import javax.validation.Valid;
 
@@ -38,6 +44,9 @@ import javax.validation.Valid;
 public class TopicController {
     private static final Logger LOG = LoggerFactory.getLogger(TopicController.class);
 
+    @Autowired
+    private TopicService service;
+
     /**
      * Find all available SNS topics within the AWS account and whether or not they are registered with Dispatchr.
      *
@@ -48,10 +57,20 @@ public class TopicController {
      */
     @RequestMapping(method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public DeferredResult<ResponseEntity<?>> findAll(@RequestParam(value = "offset", defaultValue = "0") Long offset,
-                                                     @RequestParam(value = "limit", defaultValue = "25") Long limit,
-                                                     @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir) {
-        final DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
+    public DeferredResult<ResponseEntity<FindTopicsResponse>> findAll(@RequestParam(value = "offset", defaultValue = "0") Long offset,
+                                                                      @RequestParam(value = "limit", defaultValue = "25") Long limit,
+                                                                      @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir) {
+        final DeferredResult<ResponseEntity<FindTopicsResponse>> deferredResult = new DeferredResult<>();
+
+        service.findAll(offset, limit, sortDir)
+                .last()
+                .map(FindTopicsResponse::from)
+                .subscribeOn(Schedulers.io())
+                .subscribe(body -> {
+                    deferredResult.setResult(ResponseEntity.ok(body));
+                }, error -> {
+                    //TODO: Do some error handling
+                });
 
         return deferredResult;
     }
@@ -72,6 +91,16 @@ public class TopicController {
                                                             @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir) {
         final DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
 
+        service.findRegistered(offset, limit, sortDir)
+                .last()
+                .map(FindTopicsResponse::from)
+                .subscribeOn(Schedulers.io())
+                .subscribe(body -> {
+                   deferredResult.setResult(ResponseEntity.ok(body));
+                }, error -> {
+                    //TODO: Do some error handling
+                });
+
         return deferredResult;
     }
 
@@ -91,6 +120,16 @@ public class TopicController {
                                                               @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir) {
         final DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
 
+        service.findUnregistered(offset, limit, sortDir)
+                .last()
+                .map(FindTopicsResponse::from)
+                .subscribeOn(Schedulers.io())
+                .subscribe(body -> {
+                   deferredResult.setResult(ResponseEntity.ok(body));
+                }, error -> {
+                    //TODO: Do some error handling
+                });
+
         return deferredResult;
     }
 
@@ -105,6 +144,16 @@ public class TopicController {
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public DeferredResult<ResponseEntity<?>> register(@Valid @RequestBody RegisterTopicRequest request) {
         final DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
+
+        service.register(request)
+                .last()
+                .map(RegisterTopicResponse::from)
+                .subscribeOn(Schedulers.io())
+                .subscribe(body -> {
+                   deferredResult.setResult(ResponseEntity.status(HttpStatus.CREATED).build());
+                }, error -> {
+                    //TODO: Do some error handling
+                });
 
         return deferredResult;
     }
