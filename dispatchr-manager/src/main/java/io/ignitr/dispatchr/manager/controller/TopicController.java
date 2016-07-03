@@ -16,6 +16,7 @@
 
 package io.ignitr.dispatchr.manager.controller;
 
+import io.ignitr.dispatchr.manager.core.validation.SortDirectionValidator;
 import io.ignitr.dispatchr.manager.domain.FindTopicsResponse;
 import io.ignitr.dispatchr.manager.domain.RegisterTopicRequest;
 import io.ignitr.dispatchr.manager.domain.RegisterTopicResponse;
@@ -124,34 +125,27 @@ public class TopicController {
                                                               @RequestParam(value = "sort_dir", defaultValue = "asc") String sortDir) {
         final DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
 
-        Observable.fromCallable(() -> {
-            if (sortDir != null) {
-                if (!sortDir.equalsIgnoreCase("asc") || !sortDir.equalsIgnoreCase("desc")) {
-                    throw new RuntimeException();
-                }
-            }
-
-            return true;
-        }).flatMap(valid -> {
-            return Observable.create(new Observable.OnSubscribe<List<Topic>>() {
-                @Override
-                public void call(Subscriber<? super List<Topic>> subscriber) {
-                    service.findUnregistered(offset, limit, sortDir)
-                            .last()
-                            .subscribe(topics -> {
-                                subscriber.onNext(topics);
-                                subscriber.onCompleted();
-                            });
-                }
-            });
-        })
-        .map(FindTopicsResponse::from)
-        .subscribeOn(Schedulers.io())
-        .subscribe(body -> {
-            deferredResult.setResult(ResponseEntity.ok(body));
-        }, error -> {
-            // TODO: Do some error handling
-        });
+        Observable.fromCallable(() -> SortDirectionValidator.validate(sortDir))
+                .flatMap(valid -> {
+                    return Observable.create(new Observable.OnSubscribe<List<Topic>>() {
+                        @Override
+                        public void call(Subscriber<? super List<Topic>> subscriber) {
+                            service.findUnregistered(offset, limit, sortDir)
+                                    .last()
+                                    .subscribe(topics -> {
+                                        subscriber.onNext(topics);
+                                        subscriber.onCompleted();
+                                    });
+                        }
+                    });
+                })
+                .map(FindTopicsResponse::from)
+                .subscribeOn(Schedulers.io())
+                .subscribe(body -> {
+                    deferredResult.setResult(ResponseEntity.ok(body));
+                }, error -> {
+                    // TODO: Do some error handling
+                });
 
         return deferredResult;
     }
