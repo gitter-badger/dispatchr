@@ -5,6 +5,10 @@ dispatchr
 
 A microservices event management framework designed for use within Amazon Web Services.
 
+##Documentation
+
+Please see the [wiki](https://github.com/ignitr-oss/dispatchr/wiki) for detailed documentation on how to get started using Dispatchr.
+
 ##License
 Copyright 2016 Greg Whitaker
 
